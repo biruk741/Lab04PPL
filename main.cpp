@@ -1,4 +1,6 @@
 #include <iostream>
+#include <cstring>
+
 using namespace std;
 
 typedef struct {
@@ -19,41 +21,90 @@ typedef struct {
     unsigned int year;
 } dateTimeThicc;
 
-void printDate(dateTime dt){
+void printDate(dateTime dt) {
     cout << dt.month << "/" << dt.day << "/" << dt.year << " " << dt.hours << ":" << dt.minutes << ":" <<
-    dt.seconds << endl;
+         dt.seconds << endl;
 }
 
 typedef struct {
     int length;
     int capacity;
-    int* elements;
+    int *elements;
 } ArrayList;
 
 
-ArrayList init(){
-    int* mem = (int*) ::malloc(sizeof(int));
-    return {
-        0,
-        1,
-        mem
-    };
+void init(ArrayList *list) {
+    list->length = 0;
+    list->capacity = 1;
+    list->elements = (int *) malloc(sizeof(int) * list->capacity);
 }
 
-void print(ArrayList list){
+
+void print(ArrayList list) {
     for (int i = 0; i < list.length; ++i) {
         cout << list.elements[i] << endl;
     }
 }
 
-void add(ArrayList *list, int i){
-    if (list->length + 1 <= list->capacity){ // no double
-
-        // todo: read about memcopy lol
-    } else { // double
-
+void add(ArrayList *list, int index, int element) {
+    if (list->length + 1 > list->capacity) {
+        list->capacity *= 2;
+        int *updated = (int *) malloc(sizeof(int) * list->capacity);
+        memcpy(updated, list->elements, sizeof(int) * list->length);
+        free(list->elements);
+        list->elements = updated;
     }
+    for (int i = list->length; i > index; i--) {
+        list->elements[i] = list->elements[i - 1];
+    }
+    list->elements[index] = element;
+    list->length++;
 }
+
+void deleteElement(ArrayList *list, int index) {
+    for (int i = index; i < list->length - 1; i++) {
+        list->elements[i] = list->elements[i + 1];
+    }
+    list->length--;
+}
+
+int get(ArrayList* list, int index) {
+    return list->elements[index];
+}
+
+void set(ArrayList* list, int index, int element) {
+    list->elements[index] = element;
+}
+
+ArrayList copy(ArrayList* list) {
+    ArrayList newList;
+    newList.length = list->length;
+    newList.capacity = list->capacity;
+    newList.elements = (int*)malloc(sizeof(int) * list->capacity);
+    memcpy(newList.elements, list->elements, sizeof(int) * list->length);
+    return newList;
+}
+
+void trim(ArrayList* list) {
+    list->capacity = list->length;
+    int* newData = (int*)malloc(sizeof(int) * list->capacity);
+    memcpy(newData, list->elements, sizeof(int) * list->length);
+    free(list->elements);
+    list->elements = newData;
+}
+
+void empty(ArrayList* list) {
+    free(list->elements);
+    list->length = 0;
+    list->capacity = 1;
+    list->elements = (int*)malloc(sizeof(int) * list->capacity);
+}
+
+
+
+
+
+
 
 int main() {
 
@@ -76,7 +127,7 @@ int main() {
 //    }
 
 
-    cout << sizeof(dateTime) <<endl;
+    cout << sizeof(dateTime) << endl;
     cout << sizeof(dateTimeThicc) << endl;
 
     dateTime today = {

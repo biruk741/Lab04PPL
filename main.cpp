@@ -22,8 +22,12 @@ typedef struct {
 } dateTimeBigger;
 
 void printDate(dateTime dt) {
-    cout << dt.month << "/" << dt.day << "/" << dt.year << " " << dt.hours << ":" << dt.minutes << ":" <<
-         dt.seconds << endl;
+    cout << (dt.month < 10 ? "0" : "") << dt.month << "/";
+    cout << (dt.day < 10 ? "0" : "") << dt.day << "/";
+    cout << dt.year << " ";
+    cout << (dt.hours < 10 ? "0" : "") << dt.hours << ":";
+    cout << (dt.minutes < 10 ? "0" : "") << dt.minutes << ":";
+    cout << (dt.seconds < 10 ? "0" : "") << dt.seconds << endl;
 }
 
 typedef struct {
@@ -41,9 +45,14 @@ void init(ArrayList *list) {
 
 // prints all the elements of an ArrayList
 void print(ArrayList list) {
-    for (int i = 0; i < list.length; ++i) {
-        cout << list.elements[i] << endl;
+    cout << "[";
+    for (int i = 0; i < list.length; i++) {
+        cout << list.elements[i];
+        if (i != list.length - 1) {
+            cout << ", ";
+        }
     }
+    cout << "]" << endl;
 }
 
 // adds an element to an ArrayList at a specified index
@@ -145,6 +154,62 @@ int main() {
 
     printDate(today);
 
-    cout << "Hello, World!" << endl;
+    cout << "-----------------------------" << endl;
+    cout << "Now testing ArrayList struct:" << endl;
+
+    // initialize the ArrayList
+    ArrayList list;
+    init(&list);
+    cout << "Initialized the ArrayList." << endl;
+
+    cout << "Adding elements to the arraylist:" << endl;
+
+    for (int i = 0; i < 5; i++) {
+        add(&list, i, i + 1);
+    }
+
+    // print all the elements of the ArrayList
+    cout << "ArrayList elements: ";
+    print(list);
+    // delete the element at index 2 from the ArrayList
+    deleteElement(&list, 2);
+    cout << "Deleted the element at index 2 from the ArrayList." << endl;
+    // print all the elements of the ArrayList
+    cout << "ArrayList elements: ";
+    print(list);
+    // get the element at index 2 from the ArrayList
+    cout << "The element at index 2 of the ArrayList: " << get(&list, 2) << endl;
+    // set the element at index 2 of the ArrayList to 6
+    set(&list, 2, 6);
+    cout << "Set the element at index 2 of the ArrayList to 6." << endl;
+    // print all the elements of the ArrayList
+    cout << "ArrayList elements: ";
+    print(list);
+    // create a copy of the ArrayList
+    ArrayList newList = copy(&list);
+    cout << "Created a copy of the ArrayList." << endl;
+    // print all the elements of the copy of the ArrayList
+    cout << "All the elements of the copy of the ArrayList: ";
+    print(newList);
+    // free the memory allocated for the copy of the ArrayList
+    free(newList.elements);
+    cout << "Freed the memory allocated for the copy of the ArrayList." << endl;
+    // trim the capacity of the ArrayList to its length
+    trim(&list);
+    cout << "Trimmed the capacity of the ArrayList to its length." << endl;
+    // print all the elements of the ArrayList
+    cout << "ArrayList elements: ";
+    cout << "Length: " << list.length <<", Capacity: " << list.capacity<<endl;
+    print(list);
+    // empty the ArrayList
+    empty(&list);
+    cout << "Emptied the ArrayList." << endl;
+    // print all the elements of the ArrayList
+    cout << "ArrayList elements: ";
+    print(list);
+    // free the memory allocated for the ArrayList
+    free(list.elements);
+    cout << "Freed the memory allocated for the ArrayList." << endl;
+
     return 0;
 }
